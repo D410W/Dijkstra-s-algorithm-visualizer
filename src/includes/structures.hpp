@@ -12,7 +12,7 @@ struct City {
   std::string name;
   int cost = INT_MAX;
   
-  std::vector<City*> my_connections;
+  std::vector<std::string> my_connections;
   
   sf::Vector2f position;
   sf::Vector2f velocity;
@@ -21,11 +21,11 @@ struct City {
 };
 
 struct Connection {
-  City *first;
-  City *second;
+  std::string first;
+  std::string second;
   int cost;
   
-  Connection(City *p_first, City *p_second) : first(p_first), second(p_second) {}
+  Connection(City &p_first, City &p_second, int p_cost) : first(p_first.name), second(p_second.name), cost(p_cost) {}
 };
 
 struct Map {
@@ -46,7 +46,9 @@ struct Map {
     this->cities.push_back(p_city);
   }
   
-  void insertConnection(City *first, City *second) {
-    this->connections.push_back( Connection(first, second) );
+  void insertConnection(City *first, City *second, int p_cost) {
+    this->connections.push_back( Connection(*first, *second, p_cost) );
+    first->my_connections.push_back(second->name);
+    second->my_connections.push_back(first->name);
   }
 };
