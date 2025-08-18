@@ -1,11 +1,34 @@
-#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <json/json.h>
+#include <fstream>
+
+#include <SFML/Graphics.hpp>
 
 #include "includes/logic.hpp"
 #include "includes/structures.hpp"
 #include "includes/cityWidget.hpp"
 #include "includes/connectionWidget.hpp"
+
+Json::Value loadConfigJson(std::string file_location){
+  std::ifstream settingsFile(file_location, std::ifstream::binary);
+  if (!settingsFile.is_open()) {
+    std::cerr << "Error opening file!" << std::endl;
+    return 1;
+  }
+  
+  Json::Value root;
+  Json::CharReaderBuilder readerBuilder;
+  std::string errors;
+
+  bool parsingSuccessful = Json::parseFromStream(readerBuilder, settingsFile, &root, &errors);
+  if (!parsingSuccessful) {
+    std::cerr << "Error parsing JSON: " << errors << std::endl;
+    return 1;
+  }
+  
+  return root;
+}
 
 void updateCityWidgets(Map &my_map, std::vector<CityWidget> &cityWidgets) {
   for(int i = 0; i < my_map.cities.size(); ++i) {
@@ -33,13 +56,15 @@ void centerCities(Map &my_map, sf::Vector2f center) {
 int main(){
 
   unsigned int windowWidth = 800, windowHeight = 600;
-  sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Dijkstra's", sf::Style::Default);
+  sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Dijkstra's", sf::Style::Titlebar);
   window.setVerticalSyncEnabled(true);
 
   window.setPosition(sf::Vector2i(50, 50));
 
   sf::Font font("../src/arial.ttf");
-
+  
+  Json::Value configJson = loadConfigJson("dijkstras_config.json");
+  
   Map my_map = initLogic();
   
   std::vector<CityWidget> cityWidgets;
@@ -61,7 +86,7 @@ int main(){
       }
     }
     
-    mainLogic(my_map);
+    mainLogic(my_map, configJson);
     centerCities(my_map, sf::Vector2f(windowWidth/2.f, windowHeight/2.f));
     updateCityWidgets(my_map, cityWidgets);
     

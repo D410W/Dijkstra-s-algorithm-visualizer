@@ -1,15 +1,30 @@
-#include <SFML/Graphics.hpp>
-
 #include <random>
 #include <ctime>
+#include <cmath>
 #include <iostream>
 #include <algorithm>
+#include <json/json.h>
+
+#include <SFML/Graphics.hpp>
 
 #include "includes/widget.hpp"
 #include "includes/structures.hpp"
 
+sf::Vector2f normalize(const sf::Vector2f& source)
+{
+    float length = std::sqrt(source.x * source.x + source.y * source.y);
+    if (length != 0)
+        return sf::Vector2f(source.x / length, source.y / length);
+    else
+        return source; // Or handle the zero vector case appropriately
+}
+
 float getMagnitude(const sf::Vector2f& vector) {
   return std::sqrt(vector.x * vector.x + vector.y * vector.y);
+}
+
+sf::Vector2f vecpow(const sf::Vector2f& p_vector, float power) {
+  return normalize(p_vector) * std::pow(getMagnitude(p_vector), 1.f);
 }
 
 Map initLogic() {
@@ -41,29 +56,47 @@ Map initLogic() {
   return new_map;
 }
 
-void mainLogic(Map &p_map) {
+void mainLogic(Map &p_map, Json::Value config) {
 
-  float distance = 100.0f;
+  float idealDistance = config["connection"]["idealDistance"].asFloat();
+  float differenceMultiplier = config["connection"]["differenceMultiplier"].asFloat();
+  float differencePower = config["connection"]["differencePower"].asFloat();
+  
+  float n_idealDistance = config["noConnection"]["idealDistance"].asFloat();
+  float n_differenceMultiplier = config["noConnection"]["differenceMultiplier"].asFloat();
+  float n_differencePower = config["noConnection"]["differencePower"].asFloat();
+  
+  float frictionMultiplier = config["frictionMultiplier"].asFloat();
+  
+  // std::cout << idealDistance << '\n';
 
   for(City &c : p_map.cities) {
   
     for(City &other_c : p_map.cities) {
       if(c.name == other_c.name) continue;
       
-      sf::Vector2f difference = (other_c.position - c.position);
+      if(std::find(c.my_connections.begin(),
+                   c.my_connections.end(),
+                   other_c.name) != c.my_connections.end()) {
       
-      if(getMagnitude(difference) > distance)
-	if(std::find(c.my_connections.begin(),
-		     c.my_connections.end(),
-		     other_c.name) == c.my_connections.end()) continue;
+        sf::Vector2f difference = (other_c.position - c.position);
 
-
-      difference *= getMagnitude(difference) - distance;
+        difference = normalize(difference) * ( getMagnitude(difference) - idealDistance );
+        
+        c.velocity += vecpow(difference, differencePower) * differenceMultiplier;
       
-      c.velocity += difference * 0.01f;
+      } else {
+        sf::Vector2f difference = (other_c.position - c.position);
+        
+        if(getMagnitude(difference) > n_idealDistance) continue;
+
+        difference = normalize(difference) * ( getMagnitude(difference) - n_idealDistance );
+        
+        c.velocity += vecpow(difference, n_differencePower) * n_differenceMultiplier;
+      }
     }
     
-    c.velocity = c.velocity * 0.6f;
+    c.velocity = c.velocity * frictionMultiplier;
     
     c.position += c.velocity;
     

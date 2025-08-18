@@ -9,6 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # CMake will error if C++17 is not available
  
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
 
+list(APPEND CMAKE_PREFIX_PATH "/home/thales/.local/share/vcpkg/installed/x64-linux")
+
+find_package(jsoncpp CONFIG REQUIRED)
+
 cmake_policy(SET CMP0072 NEW)
 
 add_executable(executable src/main.cpp src/logic.cpp)
@@ -29,6 +33,7 @@ target_link_libraries(executable PRIVATE
     udev
     freetype
     GL
+    JsonCpp::JsonCpp
 )
 
 # (Optional) If you have headers in a separate 'include' directory, tell CMake where to find them.
