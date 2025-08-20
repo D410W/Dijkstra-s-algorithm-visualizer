@@ -17,6 +17,8 @@ cmake_policy(SET CMP0072 NEW)
 
 add_executable(executable src/main.cpp src/logic.cpp)
 
+target_compile_options(executable PRIVATE -Wall)
+
 # (Optional) Link libraries if your executable needs them
 # For example, if you were using an external library like Boost, you'd link it here.
 target_link_directories(executable PUBLIC /usr/local/lib)

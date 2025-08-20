@@ -1,4 +1,14 @@
 {
-    "idealDistance": 80.0,
-    "frictionMultiplier": 0.6, 
+    "frictionMultiplier": 0.3,
+    
+    "connection": {
+        "idealDistance": 150.0,
+        "differenceMultiplier": 1.0,
+        "differencePower": 1.0,
+    },
+    "noConnection": {
+        "idealDistance": 160.0,
+        "differenceMultiplier": 5,
+        "differencePower": 600000.0,
+    }
 }
