@@ -15,4 +15,4 @@ This project requires a c++17 compiler and CMake.
 ```bash
      mkdir build && cd build
      cmake ..
-     make
+     cmake --build .
