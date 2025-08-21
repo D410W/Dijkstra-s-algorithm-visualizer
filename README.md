@@ -4,7 +4,12 @@ A small project using SFML's graphical capabilities for visualizing dijkstra's a
 #### Programming languages:
 - C++
 
-# Compilation
+## Dependencies
+- SFML 3.0.1
+- JsonCpp
+
+# Compiling with CMake
+
 This project requires a c++17 compiler and CMake.
  - For compilation, create a new folder for the build files, initialize CMake and run Make:
 ```bash
