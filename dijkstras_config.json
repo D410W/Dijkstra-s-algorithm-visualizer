@@ -1,14 +1,21 @@
+// default simulation parameters
 {
     "frictionMultiplier": 0.3,
+    "stableTime": 1,
+    "frictionMultiplierStable": 0.1,
+    
     
     "connection": {
         "idealDistance": 150.0,
-        "differenceMultiplier": 1.0,
-        "differencePower": 1,
+        "differenceMultiplier": 1.2,
+        "differencePower": 1.0,
     },
     "noConnection": {
-        "idealDistance": 160.0,
-        "differenceMultiplier": 5,
-        "differencePower": 1,
+        "idealDistance": 150.0,
+        "differenceMultiplier": 1.1,
+        "differencePower": 2,
+        
+        "intersection_difference_multiplier": 1.1,
+        "intersection_difference_power": 1.1,
     }
 }

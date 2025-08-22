@@ -3,8 +3,9 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
-#include <json/json.h>
+#include <ctime>
 
+#include <json/json.h>
 #include <SFML/Graphics.hpp>
 
 #include "includes/widget.hpp"
@@ -27,36 +28,26 @@ sf::Vector2f vecpow(const sf::Vector2f& p_vector, float power) {
   return normalize(p_vector) * std::pow(getMagnitude(p_vector), power);
 }
 
-Map initLogic() {
+Map initLogic(Json::Value map_config) {
   srand(time(0));
   
   Map new_map;
   
-  new_map.insertCity( City("A") );
+  for (Json::Value city_name : map_config["cities"])
+    new_map.insertCity( City(city_name.asString()) );
+  
+  for (Json::Value connec : map_config["connections"])
+    new_map.insertConnection( new_map.getCity(connec[0].asString()),
+                              new_map.getCity(connec[1].asString()),
+                              connec[2].asInt() );
 
-  new_map.insertCity( City("B") );
-  new_map.insertCity( City("C") );
-  new_map.insertCity( City("D") );
-  new_map.insertCity( City("E") );
-  new_map.insertCity( City("F") );
-  new_map.insertCity( City("G") );
-
-  new_map.insertConnection( new_map.getCity("A"), new_map.getCity("C"), 3 );
-  new_map.insertConnection( new_map.getCity("A"), new_map.getCity("F"), 2 );
-  new_map.insertConnection( new_map.getCity("C"), new_map.getCity("F"), 2 );
-  new_map.insertConnection( new_map.getCity("C"), new_map.getCity("E"), 1 );
-  new_map.insertConnection( new_map.getCity("C"), new_map.getCity("D"), 4 );
-  new_map.insertConnection( new_map.getCity("F"), new_map.getCity("E"), 3 );
-  new_map.insertConnection( new_map.getCity("F"), new_map.getCity("B"), 6 );
-  new_map.insertConnection( new_map.getCity("F"), new_map.getCity("G"), 5 );
-  new_map.insertConnection( new_map.getCity("E"), new_map.getCity("B"), 2 );
-  new_map.insertConnection( new_map.getCity("D"), new_map.getCity("B"), 1 );
-  new_map.insertConnection( new_map.getCity("G"), new_map.getCity("B"), 2 );
+  // new_map.insertConnection( new_map.getCity("A"), new_map.getCity("Natal"), 3 );
+  // new_map.insertConnection( new_map.getCity("C"), new_map.getCity("Natal"), 3 );
 
   return new_map;
 }
 
-void mainLogic(Map &p_map, Json::Value config) {
+void mainLogic(time_t startTime, Map &p_map, Json::Value config) {
 
   float idealDistance = config["connection"]["idealDistance"].asFloat();
   float differenceMultiplier = config["connection"]["differenceMultiplier"].asFloat();
@@ -66,9 +57,14 @@ void mainLogic(Map &p_map, Json::Value config) {
   float n_differenceMultiplier = config["noConnection"]["differenceMultiplier"].asFloat();
   float n_differencePower = config["noConnection"]["differencePower"].asFloat();
   
-  float frictionMultiplier = config["frictionMultiplier"].asFloat();
+  float frictionMultiplier = 0.f;
+  if (time(0) - startTime > config["stableTime"].asFloat()) {
+    frictionMultiplier = config["frictionMultiplierStable"].asFloat();
+  } else { 
+    frictionMultiplier = config["frictionMultiplier"].asFloat();
+  }
   
-  // std::cout << idealDistance << '\n';
+  // std::cout << config["stableTime"].asInt() << '\n';
 
   for(City &c : p_map.cities) {
   
@@ -91,7 +87,7 @@ void mainLogic(Map &p_map, Json::Value config) {
         if(getMagnitude(difference) > n_idealDistance) continue;
 
         difference = normalize(difference) * ( getMagnitude(difference) - n_idealDistance );
-        std::cout << difference.x << ' ' << vecpow(difference, n_differencePower).x << '\n';
+
         c.velocity += vecpow(difference, n_differencePower) * n_differenceMultiplier;
       }
     }

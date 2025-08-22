@@ -2,6 +2,7 @@
 #include <iostream>
 #include <json/json.h>
 #include <fstream>
+#include <ctime>
 
 #include <SFML/Graphics.hpp>
 
@@ -10,10 +11,10 @@
 #include "includes/cityWidget.hpp"
 #include "includes/connectionWidget.hpp"
 
-Json::Value loadConfigJson(std::string file_location){
+Json::Value loadJson(std::string file_location){
   std::ifstream settingsFile(file_location, std::ifstream::binary);
   if (!settingsFile.is_open()) {
-    std::cerr << "Error opening file!" << std::endl;
+    std::cerr << "Error opening JSON file!" << std::endl;
     return 1;
   }
   
@@ -58,14 +59,20 @@ int main(){
   unsigned int windowWidth = 800, windowHeight = 600;
   sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Dijkstra's", sf::Style::Titlebar);
   window.setVerticalSyncEnabled(true);
-
   window.setPosition(sf::Vector2i(50, 50));
-
+  
   sf::Font font("assets/arial.ttf");
   
-  Json::Value configJson = loadConfigJson("config.json");
+  // initialization of logic objects:
   
-  Map my_map = initLogic();
+  time_t startTime = time(0);
+  Json::Value simulation_config_json = loadJson("dijkstras_config.json");
+  Json::Value city_config = loadJson("city_config.json");
+  Map my_map = initLogic(city_config);
+  
+  // std::cout << simulation_config_json["stableTime"].asInt() << '\n';
+  
+  // initialization of drawable objects (widgets):
   
   std::vector<CityWidget> cityWidgets;
   std::vector<ConnectionWidget> connectionWidgets;
@@ -86,9 +93,9 @@ int main(){
       }
     }
     
-    mainLogic(my_map, configJson);
+    mainLogic(startTime, my_map, simulation_config_json); // logic step function
     centerCities(my_map, sf::Vector2f(windowWidth/2.f, windowHeight/2.f));
-    updateCityWidgets(my_map, cityWidgets);
+    updateCityWidgets(my_map, cityWidgets); // update widgets
     
     //---------------
 
