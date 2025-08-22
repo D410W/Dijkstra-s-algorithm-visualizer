@@ -67,8 +67,8 @@ int main(){
   
   time_t startTime = time(0);
   Json::Value simulation_config_json = loadJson("dijkstras_config.json");
-  Json::Value city_config = loadJson("city_config.json");
-  Map my_map = initLogic(city_config);
+  Json::Value map_config = loadJson("map_config.json");
+  Map my_map = initLogic(map_config);
   
   // std::cout << simulation_config_json["stableTime"].asInt() << '\n';
   
