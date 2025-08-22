@@ -2,7 +2,7 @@
 #include <json/json.h>
 
 #include "widget.hpp"
-#include "structures.hpp"
+#include "cityStructures.hpp"
 
 Map initLogic();
 

@@ -34,7 +34,7 @@ struct Map {
   std::vector<Connection> connections;
   
   City* getCity(std::string p_name) {
-    for(int i = 0; i < this->cities.size(); i++) {
+    for(int i = 0; i < (int)this->cities.size(); i++) {
       if(this->cities[i].name == p_name) {
         return &(this->cities[i]);
       }

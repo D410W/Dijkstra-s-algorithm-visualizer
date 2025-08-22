@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "includes/logic.hpp"
-#include "includes/structures.hpp"
+#include "includes/cityStructures.hpp"
 #include "includes/cityWidget.hpp"
 #include "includes/connectionWidget.hpp"
 
@@ -31,7 +31,7 @@ Json::Value loadConfigJson(std::string file_location){
 }
 
 void updateCityWidgets(Map &my_map, std::vector<CityWidget> &cityWidgets) {
-  for(int i = 0; i < my_map.cities.size(); ++i) {
+  for(int i = 0; i < (int)my_map.cities.size(); ++i) {
     cityWidgets[i].changePosition(my_map.cities[i].position); 
     // std::cout << my_map.cities[i].velocity.x << ' ' << my_map.cities[i].velocity.y << '\n';
   }
@@ -61,9 +61,9 @@ int main(){
 
   window.setPosition(sf::Vector2i(50, 50));
 
-  sf::Font font("../src/arial.ttf");
+  sf::Font font("assets/arial.ttf");
   
-  Json::Value configJson = loadConfigJson("dijkstras_config.json");
+  Json::Value configJson = loadConfigJson("config.json");
   
   Map my_map = initLogic();
   

@@ -6,7 +6,7 @@
 
 #include "widget.hpp"
 #include "cityWidget.hpp"
-#include "structures.hpp"
+#include "cityStructures.hpp"
 
 class ConnectionWidget : public Widget {
 private:

@@ -4,11 +4,11 @@
     "connection": {
         "idealDistance": 150.0,
         "differenceMultiplier": 1.0,
-        "differencePower": 1.0,
+        "differencePower": 1,
     },
     "noConnection": {
         "idealDistance": 160.0,
         "differenceMultiplier": 5,
-        "differencePower": 600000.0,
+        "differencePower": 1,
     }
 }

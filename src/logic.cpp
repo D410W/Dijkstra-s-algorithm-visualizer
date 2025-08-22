@@ -8,7 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "includes/widget.hpp"
-#include "includes/structures.hpp"
+#include "includes/cityStructures.hpp"
 
 sf::Vector2f normalize(const sf::Vector2f& source)
 {
@@ -24,7 +24,7 @@ float getMagnitude(const sf::Vector2f& vector) {
 }
 
 sf::Vector2f vecpow(const sf::Vector2f& p_vector, float power) {
-  return normalize(p_vector) * std::pow(getMagnitude(p_vector), 1.f);
+  return normalize(p_vector) * std::pow(getMagnitude(p_vector), power);
 }
 
 Map initLogic() {
@@ -91,7 +91,7 @@ void mainLogic(Map &p_map, Json::Value config) {
         if(getMagnitude(difference) > n_idealDistance) continue;
 
         difference = normalize(difference) * ( getMagnitude(difference) - n_idealDistance );
-        
+        std::cout << difference.x << ' ' << vecpow(difference, n_differencePower).x << '\n';
         c.velocity += vecpow(difference, n_differencePower) * n_differenceMultiplier;
       }
     }

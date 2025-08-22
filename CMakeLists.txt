@@ -17,11 +17,13 @@ cmake_policy(SET CMP0072 NEW)
 
 add_executable(executable src/main.cpp src/logic.cpp)
 
-target_compile_options(executable PRIVATE -Wall)
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/assets/")
+
+target_compile_options(executable PRIVATE -Wall -pedantic)
 
 # (Optional) Link libraries if your executable needs them
 # For example, if you were using an external library like Boost, you'd link it here.
-target_link_directories(executable PUBLIC /usr/local/lib)
+# target_link_directories(executable PUBLIC /usr/local/lib)
 
 # Link SFML static libraries and dependencies
 target_link_libraries(executable PRIVATE
