@@ -1,9 +1,9 @@
 #include <cmath>
 #include <iostream>
-#include <json/json.h>
 #include <fstream>
 #include <ctime>
 
+#include <json/json.h>
 #include <SFML/Graphics.hpp>
 
 #include "includes/logic.hpp"
