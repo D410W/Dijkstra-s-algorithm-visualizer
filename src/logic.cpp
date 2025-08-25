@@ -47,7 +47,9 @@ Map initLogic(Json::Value map_config) {
   return new_map;
 }
 
-void mainLogic(time_t startTime, Map &p_map, Json::Value config) {
+int frame = 0;
+
+void mainLogic(Map &p_map, Json::Value config, bool unstable = false) {
 
   float idealDistance = config["connection"]["idealDistance"].asFloat();
   float differenceMultiplier = config["connection"]["differenceMultiplier"].asFloat();
@@ -58,10 +60,10 @@ void mainLogic(time_t startTime, Map &p_map, Json::Value config) {
   float n_differencePower = config["noConnection"]["differencePower"].asFloat();
   
   float frictionMultiplier = 0.f;
-  if (time(0) - startTime > config["stableTime"].asFloat()) {
-    frictionMultiplier = config["frictionMultiplierStable"].asFloat();
-  } else { 
+  if (unstable) {
     frictionMultiplier = config["frictionMultiplier"].asFloat();
+  } else { 
+    frictionMultiplier = config["frictionMultiplierStable"].asFloat();
   }
   
   // std::cout << config["stableTime"].asInt() << '\n';

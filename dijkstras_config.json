@@ -1,8 +1,8 @@
 // default simulation parameters
 {
     "frictionMultiplier": 0.3,
-    "stableTime": 1,
-    "frictionMultiplierStable": 0.1,
+    "unstable_frames": 200,
+    "frictionMultiplierStable": 0.075,
     
     
     "connection": {

@@ -65,10 +65,12 @@ int main(){
   
   // initialization of logic objects:
   
-  time_t startTime = time(0);
   Json::Value simulation_config_json = loadJson("dijkstras_config.json");
   Json::Value map_config = loadJson("map_config.json");
   Map my_map = initLogic(map_config);
+  
+  int unstable_frames = simulation_config_json["unstable_frames"].asInt();
+  for (int i = 0; i < unstable_frames; ++i) mainLogic(my_map, simulation_config_json, true);
   
   // std::cout << simulation_config_json["stableTime"].asInt() << '\n';
   
@@ -93,7 +95,7 @@ int main(){
       }
     }
     
-    mainLogic(startTime, my_map, simulation_config_json); // logic step function
+    mainLogic(my_map, simulation_config_json); // logic step function
     centerCities(my_map, sf::Vector2f(windowWidth/2.f, windowHeight/2.f));
     updateCityWidgets(my_map, cityWidgets); // update widgets
     

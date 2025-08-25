@@ -1,4 +1,4 @@
-#include <ctime>
+// #include <ctime>
 
 #include <SFML/Graphics.hpp>
 #include <json/json.h>
@@ -8,4 +8,4 @@
 
 Map initLogic(Json::Value city_config);
 
-void mainLogic(time_t startTime, Map &p_map, Json::Value sim_config);
+void mainLogic(Map &p_map, Json::Value sim_config, bool unstable = false);
