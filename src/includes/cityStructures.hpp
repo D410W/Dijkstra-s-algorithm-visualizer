@@ -7,10 +7,12 @@
 #include <random>
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics.hpp>
 
 struct City {
   std::string name;
   int cost = INT_MAX;
+  sf::Color color = sf::Color::White;
   
   std::vector<std::string> my_connections;
   
@@ -24,6 +26,7 @@ struct Connection {
   std::string first;
   std::string second;
   int cost;
+  sf::Color color = sf::Color::White;
   
   Connection(City &p_first, City &p_second, int p_cost) : first(p_first.name), second(p_second.name), cost(p_cost) {}
 };

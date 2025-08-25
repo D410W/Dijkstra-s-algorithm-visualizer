@@ -10,6 +10,7 @@
 #include "includes/cityStructures.hpp"
 #include "includes/cityWidget.hpp"
 #include "includes/connectionWidget.hpp"
+#include "includes/algorithm.hpp"
 
 Json::Value loadJson(std::string file_location){
   std::ifstream settingsFile(file_location, std::ifstream::binary);
@@ -33,8 +34,16 @@ Json::Value loadJson(std::string file_location){
 
 void updateCityWidgets(Map &my_map, std::vector<CityWidget> &cityWidgets) {
   for(int i = 0; i < (int)my_map.cities.size(); ++i) {
-    cityWidgets[i].changePosition(my_map.cities[i].position); 
+    cityWidgets[i].changePosition(my_map.cities[i].position);
+    cityWidgets[i].setFillColor(my_map.cities[i].color);
     // std::cout << my_map.cities[i].velocity.x << ' ' << my_map.cities[i].velocity.y << '\n';
+  }
+}
+
+void updateConnectionWidgets(Map &my_map, std::vector<ConnectionWidget> &connectionWidgets) {
+  for(int i = 0; i < (int)my_map.connections.size(); ++i) {
+    connectionWidgets[i].updatePosition();
+    connectionWidgets[i].setFillColor( my_map.connections[i].color );
   }
 }
 
@@ -56,6 +65,7 @@ void centerCities(Map &my_map, sf::Vector2f center) {
 
 int main(){
 
+
   unsigned int windowWidth = 800, windowHeight = 600;
   sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Dijkstra's", sf::Style::Titlebar);
   window.setVerticalSyncEnabled(true);
@@ -67,13 +77,14 @@ int main(){
   
   Json::Value simulation_config_json = loadJson("dijkstras_config.json");
   Json::Value map_config = loadJson("map_config.json");
+  Json::Value algorithm_config = loadJson("algorithm_config.json");
+  
   Map my_map = initSimulation(map_config);
+  Algo algorithm(algorithm_config, my_map);
   
   int unstable_frames = simulation_config_json["unstable_frames"].asInt();
   for (int i = 0; i < unstable_frames; ++i) mainSimulation(my_map, simulation_config_json, true);
-  
-  // std::cout << simulation_config_json["stableTime"].asInt() << '\n';
-  
+    
   // initialization of drawable objects (widgets):
   
   std::vector<CityWidget> cityWidgets;
@@ -85,13 +96,13 @@ int main(){
 
   for(Connection &con : my_map.connections) {
     connectionWidgets.push_back(
-      ConnectionWidget( my_map.getCity(con.first), my_map.getCity(con.second), font, con.cost)
+      ConnectionWidget( my_map.getCity(con.first), my_map.getCity(con.second), font, con.cost )
     );
   }
 
-  while (window.isOpen()){
+  while (window.isOpen()) {
     
-    while (const auto event = window.pollEvent()){
+    while (const auto event = window.pollEvent()) {
       if (event->is<sf::Event::Closed>()) {
         window.close();
       }
@@ -99,16 +110,17 @@ int main(){
     
     mainSimulation(my_map, simulation_config_json); // simulation step function
     centerCities(my_map, sf::Vector2f(windowWidth/2.f, windowHeight/2.f));
-    updateCityWidgets(my_map, cityWidgets); // update widgets
+    
+    algorithm.update();
     
     //---------------
+    
+    updateCityWidgets(my_map, cityWidgets); // update city widgets
+    updateConnectionWidgets(my_map, connectionWidgets); // update conn. widgets
 
     window.clear(sf::Color(18,18,18));
     
-    for(ConnectionWidget &conw : connectionWidgets) {
-      conw.updatePosition();
-      window.draw(conw);
-    }
+    for(ConnectionWidget &conw : connectionWidgets) window.draw(conw);
     for(CityWidget &cw : cityWidgets) window.draw(cw);
     
     window.display();

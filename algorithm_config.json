@@ -1,0 +1,5 @@
+{
+    "begin_city": "A",
+    "end_city": "B",
+    "time_step_milliseconds": 1000,
+}
