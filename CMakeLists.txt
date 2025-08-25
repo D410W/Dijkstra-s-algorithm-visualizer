@@ -15,7 +15,7 @@ find_package(jsoncpp CONFIG REQUIRED)
 
 cmake_policy(SET CMP0072 NEW)
 
-add_executable(executable src/main.cpp src/logic.cpp)
+add_executable(executable src/main.cpp src/simulation.cpp)
 
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/assets/")
 

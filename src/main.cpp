@@ -6,7 +6,7 @@
 #include <json/json.h>
 #include <SFML/Graphics.hpp>
 
-#include "includes/logic.hpp"
+#include "includes/simulation.hpp"
 #include "includes/cityStructures.hpp"
 #include "includes/cityWidget.hpp"
 #include "includes/connectionWidget.hpp"
@@ -63,14 +63,14 @@ int main(){
   
   sf::Font font("assets/arial.ttf");
   
-  // initialization of logic objects:
+  // initialization of simulation objects:
   
   Json::Value simulation_config_json = loadJson("dijkstras_config.json");
   Json::Value map_config = loadJson("map_config.json");
-  Map my_map = initLogic(map_config);
+  Map my_map = initSimulation(map_config);
   
   int unstable_frames = simulation_config_json["unstable_frames"].asInt();
-  for (int i = 0; i < unstable_frames; ++i) mainLogic(my_map, simulation_config_json, true);
+  for (int i = 0; i < unstable_frames; ++i) mainSimulation(my_map, simulation_config_json, true);
   
   // std::cout << simulation_config_json["stableTime"].asInt() << '\n';
   
@@ -84,7 +84,9 @@ int main(){
   }
 
   for(Connection &con : my_map.connections) {
-    connectionWidgets.push_back(ConnectionWidget( my_map.getCity(con.first), my_map.getCity(con.second) ));
+    connectionWidgets.push_back(
+      ConnectionWidget( my_map.getCity(con.first), my_map.getCity(con.second), font, con.cost)
+    );
   }
 
   while (window.isOpen()){
@@ -95,7 +97,7 @@ int main(){
       }
     }
     
-    mainLogic(my_map, simulation_config_json); // logic step function
+    mainSimulation(my_map, simulation_config_json); // simulation step function
     centerCities(my_map, sf::Vector2f(windowWidth/2.f, windowHeight/2.f));
     updateCityWidgets(my_map, cityWidgets); // update widgets
     

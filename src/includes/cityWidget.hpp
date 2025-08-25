@@ -6,11 +6,11 @@
 
 class CityWidget : public Widget {
 private:
-  sf::CircleShape circleBackground;
+  sf::CircleShape circle_background;
   sf::Text name;
   
 public:
-  CityWidget(sf::Font &p_font, std::string p_name, int size = 20) : circleBackground(20.0f), name(p_font) {
+  CityWidget(sf::Font &p_font, std::string p_name, int size = 20) : circle_background(20.0f), name(p_font) {
     name.setString(p_name);
     name.setCharacterSize(size);
 
@@ -19,14 +19,18 @@ public:
     name.setOutlineThickness(2.f);
   }
   
+  void setFillColor(sf::Color new_color) {
+    this->circle_background.setFillColor(new_color);
+  }
+  
   void changePosition(sf::Vector2f p_position) {
-    this->setPosition(p_position - sf::Vector2f(circleBackground.getRadius(), circleBackground.getRadius()));
+    this->setPosition(p_position - sf::Vector2f(circle_background.getRadius(), circle_background.getRadius()));
   }
   
   void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
     states.transform *= this->getTransform();
 
-    target.draw(circleBackground, states);
+    target.draw(circle_background, states);
     target.draw(name, states);
   }
   

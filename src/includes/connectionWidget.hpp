@@ -14,10 +14,23 @@ private:
   City *second;
 
   sf::RectangleShape line;
+  sf::Text cost;
   
 public:
-  ConnectionWidget(City *p_first, City *p_second)
-    : first(p_first), second(p_second), line(sf::Vector2f(0.f, 3.f)) {}
+  ConnectionWidget(City *p_first, City *p_second, sf::Font &p_font, int cost, int font_size = 16)
+    : first(p_first), second(p_second), line(sf::Vector2f(0.f, 3.f)), cost(p_font) {
+    
+    this->cost.setString(std::to_string(cost));
+    this->cost.setCharacterSize(font_size);
+
+    this->cost.setFillColor(sf::Color::White);
+    this->cost.setOutlineColor(sf::Color::Black);
+    this->cost.setOutlineThickness(2.f);
+  }
+  
+  void setFillColor(sf::Color new_color) {
+    this->line.setFillColor(new_color);
+  }
   
   void updatePosition() {
     sf::Vector2f point1 = this->first->position;
@@ -34,12 +47,15 @@ public:
     line.setPosition( point1 );         // Position the rectangle
     line.setRotation( sf::degrees(angle) );         // Rotate the rectangle
     // line.setFillColor(color);        // Set the color
+    
+    cost.setPosition( (point1 + point2)/2.0f );
   }
   
   void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
     states.transform *= this->getTransform();
 
     target.draw(this->line, states);
+    target.draw(this->cost, states);
   }
   
   void handleEvent(const sf::Event& event, const sf::RenderWindow& window) override {}
