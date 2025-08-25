@@ -11,7 +11,7 @@ A small project using SFML's graphical capabilities for visualizing dijkstra's a
 - JsonCpp &nbsp; &nbsp;
 
 This project requires a c++17 compiler and CMake.
- - For compilation, create a new folder for the build files, initialize CMake and run Make:
+ - For compilation, create a new folder for the build files, initialize CMake and run the build command:
 ```bash
      mkdir build && cd build
      cmake ..
