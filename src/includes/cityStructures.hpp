@@ -14,7 +14,7 @@ struct City {
   int cost = INT_MAX;
   sf::Color color = sf::Color::White;
   
-  std::vector<std::string> my_connections;
+  std::vector<std::pair<std::string, int>> connections;
   
   sf::Vector2f position;
   sf::Vector2f velocity;
@@ -51,7 +51,7 @@ struct Map {
   
   void insertConnection(City *first, City *second, int p_cost) {
     this->connections.push_back( Connection(*first, *second, p_cost) );
-    first->my_connections.push_back(second->name);
-    second->my_connections.push_back(first->name);
+    first->connections.push_back( {second->name, p_cost} );
+    second->connections.push_back( {first->name, p_cost} );
   }
 };

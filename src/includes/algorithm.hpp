@@ -6,6 +6,7 @@
 #include <json/json.h>
 
 #include "cityStructures.hpp"
+#include "dijkstras_steps.hpp"
 
 long get_time_ms() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -37,17 +38,22 @@ struct TimeStamp {
 class Algo {
 private:
   Map *my_map;
-  City *begin_city;
-  City *end_city;
+  std::string begin_city;
+  std::string end_city;
+  
+  std::string dijkstras_steps = "";
 
   TimeStamp time_stamp;
   
 public:
   Algo(Json::Value config_json, Map &p_map) : my_map(&p_map), time_stamp(config_json["time_step_milliseconds"].asInt()) {
-    this->begin_city = this->my_map->getCity(config_json["begin_city"].asString());
-    this->end_city = this->my_map->getCity(config_json["end_city"].asString());
+    this->begin_city = this->my_map->getCity(config_json["begin_city"].asString())->name;
+    this->end_city = this->my_map->getCity(config_json["end_city"].asString())->name;
       
     this->time_stamp.value = this->time_stamp.value % this->time_stamp.ms_step;
+    
+    this->dijkstras_steps = calculate_dijkstras_steps(this->my_map, this->begin_city, this->end_city);
+    
   }
   
   void update() {
