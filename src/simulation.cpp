@@ -73,9 +73,11 @@ void mainSimulation(Map &p_map, Json::Value config, bool unstable = false) {
     for(City &other_c : p_map.cities) {
       if(c.name == other_c.name) continue;
       
-      if(std::find(c.connections.begin(),
+      if(std::find_if(c.connections.begin(),
                    c.connections.end(),
-                   other_c.name) != c.connections.end()) {
+                   [&](const std::pair<std::string, int> &p_pair) {
+                     return p_pair.first == other_c.name;
+                   }) != c.connections.end()) {
       
         sf::Vector2f difference = (other_c.position - c.position);
 

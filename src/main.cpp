@@ -36,6 +36,7 @@ void updateCityWidgets(Map &my_map, std::vector<CityWidget> &cityWidgets) {
   for(int i = 0; i < (int)my_map.cities.size(); ++i) {
     cityWidgets[i].changePosition(my_map.cities[i].position);
     cityWidgets[i].setFillColor(my_map.cities[i].color);
+    cityWidgets[i].updateCost(my_map.cities[i].cost_view);
     // std::cout << my_map.cities[i].velocity.x << ' ' << my_map.cities[i].velocity.y << '\n';
   }
 }
