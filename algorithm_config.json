@@ -1,5 +1,5 @@
 {
-    "begin_city": "F",
-    "end_city": "D",
+    "begin_city": "A",
+    "end_city": "B",
     "time_step_milliseconds": 100,
 }
